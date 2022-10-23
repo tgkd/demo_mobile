@@ -1,3 +1,9 @@
+export type Media = {
+  id: string;
+  url: string;
+  type: 'image' | 'video';
+};
+
 export type Car = {
   id: number;
   make: string;
@@ -12,6 +18,6 @@ export type Car = {
     phone: string;
     city: string;
   };
-  images: string[];
+  images: Media[];
   description: string;
 };

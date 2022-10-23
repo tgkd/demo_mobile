@@ -150,7 +150,7 @@ const $cars = createStore<Car[]>([])
       : state.concat(result.payload);
   })
   .on(searchFx.fail, (state, { error }) => {
-    console.log('search failed', error);
+    console.error('search request failed', error);
     return state;
   })
   .reset(carsReset);

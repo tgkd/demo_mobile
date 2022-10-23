@@ -1,6 +1,34 @@
 const { faker } = require('@faker-js/faker');
 const fs = require('fs');
 
+const fakeImages = [
+  {
+    id: faker.datatype.uuid(),
+    url: faker.image.imageUrl(300, 300, 'car', true),
+    type: faker.helpers.arrayElement(['image', 'video']),
+  },
+  {
+    id: faker.datatype.uuid(),
+    url: faker.image.imageUrl(300, 300, 'car', true),
+    type: faker.helpers.arrayElement(['image', 'video']),
+  },
+  {
+    id: faker.datatype.uuid(),
+    url: faker.image.imageUrl(300, 300, 'car', true),
+    type: faker.helpers.arrayElement(['image', 'video']),
+  },
+  {
+    id: faker.datatype.uuid(),
+    url: faker.image.imageUrl(300, 300, 'car', true),
+    type: faker.helpers.arrayElement(['image', 'video']),
+  },
+  {
+    id: faker.datatype.uuid(),
+    url: faker.image.imageUrl(300, 300, 'car', true),
+    type: faker.helpers.arrayElement(['image', 'video']),
+  },
+];
+
 function generateCars() {
   let cars = [];
 
@@ -24,11 +52,7 @@ function generateCars() {
         phone: faker.phone.number(),
         city: faker.address.city(),
       },
-      images: [
-        faker.internet.avatar(),
-        faker.internet.avatar(),
-        faker.internet.avatar(),
-      ],
+      images: faker.helpers.arrayElements(fakeImages, 3),
       description: faker.lorem.paragraph(),
     });
   }

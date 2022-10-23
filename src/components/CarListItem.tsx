@@ -56,7 +56,7 @@ export function CarListItem(props: Props) {
       <View style={styles.container}>
         <View style={styles.info}>
           <View style={styles.imgContainer}>
-            <Image style={styles.img} source={{ uri: previewUrl }} />
+            <Image style={styles.img} source={{ uri: previewUrl.url }} />
           </View>
           <Text>{`${make} ${model}`}</Text>
         </View>

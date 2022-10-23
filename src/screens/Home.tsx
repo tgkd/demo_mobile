@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { useStore } from 'effector-react';
-import React, { useEffect, useLayoutEffect } from 'react';
-import { Keyboard, StyleSheet, TextInput, View } from 'react-native';
+import React, { useCallback, useEffect, useLayoutEffect } from 'react';
+import { Button, Keyboard, StyleSheet, TextInput, View } from 'react-native';
 
 import { CarsList } from '../components/CarsList';
 import { AppNav } from '../navigation';
@@ -37,16 +37,22 @@ export function HomeScreen() {
     pagingChanged(paging);
   }, []);
 
+  const showFiltersModal = useCallback(() => {
+    Keyboard.dismiss();
+    navigation.navigate('filters');
+  }, [navigation]);
+
   useLayoutEffect(() => {
     navigation.setOptions({
       title: 'Cars',
       statusBarHidden: false,
+      headerRight: () => <Button onPress={showFiltersModal} title="Filters" />,
       headerSearchBarOptions: {
         inputType: 'text',
         onChangeText: ({ nativeEvent: { text } }) => searchChanged(text),
       },
     });
-  }, [navigation]);
+  }, [navigation, showFiltersModal]);
 
   const onEndReached = () => {
     if (!loading && paging.nextPage) {
