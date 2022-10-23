@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { useStore } from 'effector-react';
-import React from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import { Keyboard, StyleSheet, TextInput, View } from 'react-native';
 
 import { CarsList } from '../components/CarsList';
@@ -27,11 +27,26 @@ const styles = StyleSheet.create({
 });
 
 export function HomeScreen() {
-  const { navigate } = useNavigation<AppNav>();
+  const navigation = useNavigation<AppNav>();
   const data = useStore($cars);
   const paging = useStore($paging);
   const search = useStore($searchFilter);
   const loading = useStore(searchFx.pending);
+
+  useEffect(() => {
+    pagingChanged(paging);
+  }, []);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      title: 'Cars',
+      statusBarHidden: false,
+      headerSearchBarOptions: {
+        inputType: 'text',
+        onChangeText: ({ nativeEvent: { text } }) => searchChanged(text),
+      },
+    });
+  }, [navigation]);
 
   const onEndReached = () => {
     if (!loading && paging.nextPage) {
@@ -41,7 +56,7 @@ export function HomeScreen() {
 
   const onSelect = (car: Car) => {
     Keyboard.dismiss();
-    navigate('details', { car });
+    navigation.navigate('details', { car });
   };
 
   return (

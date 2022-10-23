@@ -12,6 +12,8 @@ import axios from 'axios';
 
 import { Car } from '../types';
 
+const API_URL = 'http://localhost:3004/data';
+
 type StateParams = {
   paging: {
     page: number;
@@ -61,7 +63,7 @@ const $combinedFilter = combine({
 
 const searchFx = createEffect({
   async handler(params: StateParams) {
-    const res = await axios.get('http://localhost:3000/cars', {
+    const res = await axios.get(API_URL, {
       params: {
         _page: params.paging.page,
         q: params.searchFilter ?? undefined,
@@ -69,13 +71,15 @@ const searchFx = createEffect({
       },
     });
 
-    if (res.data.error) {
-      throw new Error(res.data.error);
-    }
+    const nextPage =
+      (params.paging.page + 1) * params.paging.limit <= params.paging.total
+        ? params.paging.page + 1
+        : undefined;
 
-    const { paging, payload } = res.data;
-
-    return { paging, payload };
+    return {
+      paging: { ...params.paging, nextPage },
+      payload: res.data,
+    };
   },
 });
 
@@ -144,6 +148,10 @@ const $cars = createStore<Car[]>([])
     return params.paging.page === 1
       ? result.payload
       : state.concat(result.payload);
+  })
+  .on(searchFx.fail, (state, { error }) => {
+    console.log('search failed', error);
+    return state;
   })
   .reset(carsReset);
 

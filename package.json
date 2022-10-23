@@ -8,14 +8,14 @@
     "start": "react-native start --reset-cache",
     "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "api:fake": "node fakeAPI/index.js",
-    "api:start": "json-server --watch fakeAPI/data.json --port 3004"
+    "fake": "node fakeAPI/index.js",
+    "api": "json-server --watch fakeAPI/data.json --port 3004"
   },
   "dependencies": {
     "@faker-js/faker": "^7.6.0",
     "@react-navigation/native": "^6.0.13",
     "@react-navigation/native-stack": "^6.9.1",
-    "axios": "^1.1.3",
+    "axios": "0.26.0",
     "effector": "^22.3.0",
     "effector-react": "^22.3.3",
     "json-server": "^0.17.0",

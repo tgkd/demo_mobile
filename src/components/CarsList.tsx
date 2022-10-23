@@ -9,8 +9,6 @@ import { NotFoundView } from './NotFoundView';
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 20,
-    paddingTop: 32,
     paddingBottom: 48,
   },
   searchBarTip: {
@@ -20,7 +18,8 @@ const styles = StyleSheet.create({
     color: '#ddd',
   },
   separator: {
-    height: 20,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: '#ddd',
   },
 });
 
@@ -53,7 +52,7 @@ export const CarsList = (props: Props) => {
     <FlatList
       data={props.data}
       renderItem={renderSectionItem}
-      keyExtractor={item => String(item.id)}
+      keyExtractor={item => `${item.id}_${item.model}`}
       contentContainerStyle={styles.container}
       ListFooterComponent={renderFooter}
       ListEmptyComponent={renderEmptyList}
@@ -61,6 +60,7 @@ export const CarsList = (props: Props) => {
       onEndReached={props.onEndReached}
       maxToRenderPerBatch={20}
       ItemSeparatorComponent={() => <View style={styles.separator} />}
+      contentInsetAdjustmentBehavior="automatic"
     />
   );
 };
