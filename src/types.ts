@@ -4,6 +4,8 @@ export type Media = {
   type: 'image' | 'video';
 };
 
+export type CarFuel = 'Diesel' | 'Gasoline' | 'Hybrid' | 'Electric';
+
 export type Car = {
   id: number;
   make: string;
@@ -12,7 +14,7 @@ export type Car = {
   price: number;
   mileage: number;
   firstRegistration: string;
-  fuel: 'Diesel' | 'Gasoline' | 'Hybrid' | 'Electric';
+  fuel: CarFuel;
   seller: {
     type: 'Private' | 'Dealer';
     phone: string;

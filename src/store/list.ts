@@ -10,7 +10,7 @@ import {
 import { throttle } from 'patronum';
 import axios from 'axios';
 
-import { Car } from '../types';
+import { Car, CarFuel } from '../types';
 
 const API_URL = 'http://localhost:3004/data';
 
@@ -22,7 +22,7 @@ type StateParams = {
     nextPage?: number;
   };
   searchFilter: string;
-  manufacturerFilter?: string | null;
+  fuelTypeFilter?: CarFuel | null;
 };
 
 const setInitFinished = createEvent();
@@ -37,11 +37,11 @@ const $searchFilter = createStore('')
   .on(searchChanged, (_, newSearch) => newSearch)
   .reset(searchReset);
 
-const manufacturerChanged = createEvent<string | null>();
-const manufacturerReset = createEvent();
-const $manufacturerFilter = createStore<StateParams['manufacturerFilter']>(null)
-  .on(manufacturerChanged, (_, manufacturer) => manufacturer)
-  .reset(manufacturerReset);
+const fuelTypeChanged = createEvent<CarFuel | null>();
+const fuelTypeReset = createEvent();
+const $fuelTypeFilter = createStore<StateParams['fuelTypeFilter']>(null)
+  .on(fuelTypeChanged, (_, fuelType) => fuelType)
+  .reset(fuelTypeReset);
 
 const pagingChanged = createEvent<StateParams['paging']>();
 const updatePaging = createEvent<StateParams['paging']>();
@@ -58,7 +58,7 @@ const $paging = createStore<StateParams['paging']>({
 const $combinedFilter = combine({
   searchFilter: $searchFilter,
   paging: $paging,
-  manufacturerFilter: $manufacturerFilter,
+  fuelTypeFilter: $fuelTypeFilter,
 });
 
 const searchFx = createEffect({
@@ -67,7 +67,7 @@ const searchFx = createEffect({
       params: {
         _page: params.paging.page,
         q: params.searchFilter ?? undefined,
-        manufacturer: params.manufacturerFilter ?? undefined,
+        fuelType: params.fuelTypeFilter ?? undefined,
       },
     });
 
@@ -115,25 +115,22 @@ throttle({
   target: searchWithStringFx,
 });
 
-const searchWithmanufacturerFx = attach({
+const searchWithFuelTypeFx = attach({
   effect: searchFx,
   source: $combinedFilter,
-  mapParams: (
-    manufacturerFilter: StateParams['manufacturerFilter'],
-    filters,
-  ) => ({
+  mapParams: (fuelTypeFilter: StateParams['fuelTypeFilter'], filters) => ({
     ...filters,
-    manufacturerFilter,
+    fuelTypeFilter,
   }),
 });
 
 sample({
-  source: $manufacturerFilter,
-  target: searchWithmanufacturerFx,
-  clock: manufacturerChanged,
+  source: $fuelTypeFilter,
+  target: searchWithFuelTypeFx,
+  clock: fuelTypeChanged,
 });
 
-forward({ from: [searchChanged, manufacturerChanged], to: pagingReset });
+forward({ from: [searchChanged, fuelTypeChanged], to: pagingReset });
 
 sample({
   clock: searchFx.done,
@@ -159,7 +156,7 @@ const filtersReset = createEvent();
 
 forward({
   from: filtersReset,
-  to: [searchReset, manufacturerReset, pagingReset],
+  to: [searchReset, fuelTypeReset, pagingReset],
 });
 
 export {
@@ -172,8 +169,9 @@ export {
   filtersReset,
   $cars,
   $initFinished,
-  manufacturerChanged,
+  fuelTypeChanged,
   $paging,
   $searchFilter,
   searchFx,
+  $fuelTypeFilter,
 };
