@@ -3,9 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "bootstrap": "yarn && bundle install && npx pod-install",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "start": "react-native start --reset-cache",
+    "start": "yarn run ios && yarn run api",
     "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "fake": "node fakeAPI/index.js",
