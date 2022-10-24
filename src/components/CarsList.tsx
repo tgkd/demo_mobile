@@ -39,13 +39,13 @@ export const CarsList = (props: Props) => {
     <FlatList
       data={data}
       renderItem={renderSectionItem}
-      keyExtractor={item => `${item.id}_${item.model}`}
+      keyExtractor={item => `${item.id}`}
       contentContainerStyle={styles.container}
       ListFooterComponent={renderFooter}
       ListEmptyComponent={renderEmptyList}
       onEndReachedThreshold={0.5}
       onEndReached={props.onEndReached}
-      maxToRenderPerBatch={20}
+      maxToRenderPerBatch={16}
       ItemSeparatorComponent={() => <View style={styles.separator} />}
       contentInsetAdjustmentBehavior="automatic"
       refreshing={false}

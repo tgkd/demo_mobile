@@ -6,12 +6,7 @@ import { Button, Keyboard, StyleSheet, View } from 'react-native';
 import { CarsList } from '../components/CarsList';
 import { SearchBar } from '../components/HeaderSearchBar';
 import { AppNav } from '../navigation';
-import {
-  $paging,
-  pagingChanged,
-  pagingReset,
-  searchFx,
-} from '../store/filters';
+import { $paging, pagingChanged, searchFx } from '../store/filters';
 import { Car } from '../types';
 
 export function HomeScreen() {
@@ -35,14 +30,18 @@ export function HomeScreen() {
   }, [navigation, showFiltersModal]);
 
   const onEndReached = () => {
-    if (!loading && paging.nextPage) {
-      pagingChanged({ ...paging, page: paging.nextPage });
+    if (!loading && paging.nextAvailable) {
+      pagingChanged({ ...paging, page: paging.page + 1 });
     }
   };
 
   const onSelect = (car: Car) => {
     Keyboard.dismiss();
     navigation.navigate('details', { car });
+  };
+
+  const onRefresh = () => {
+    pagingChanged({ ...paging, page: 1 });
   };
 
   return (
@@ -54,7 +53,7 @@ export function HomeScreen() {
         onSelect={onSelect}
         onEndReached={onEndReached}
         refreshing={loading}
-        onRefresh={pagingReset}
+        onRefresh={onRefresh}
       />
     </View>
   );

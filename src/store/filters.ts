@@ -12,6 +12,19 @@ import { throttle } from 'patronum';
 
 import { CarFuel, ListRequestParams } from '../types';
 
+// (?) JSON-Server pagination parsing
+function parseLinkHeader(link: string) {
+  return Object.fromEntries(
+    link
+      .split(', ')
+      .map(header => header.split('; '))
+      .map(header => [
+        header[1].replace(/"/g, '').replace('rel=', ''),
+        header[0].slice(1, -1),
+      ]),
+  );
+}
+
 const API_URL = 'http://localhost:3004/data';
 
 const filtersReset = createEvent();
@@ -22,17 +35,16 @@ const searchFx = createEffect({
       params: {
         _page: params.paging.page,
         q: params.searchFilter ?? undefined,
-        fuelType: params.fuelTypeFilter ?? undefined,
+        fuel: params.fuelTypeFilter ?? undefined,
       },
     });
 
-    const nextPage =
-      (params.paging.page + 1) * params.paging.limit <= params.paging.total
-        ? params.paging.page + 1
-        : undefined;
+    const paginationRes = res.headers.link?.length
+      ? parseLinkHeader(res.headers.link)
+      : {};
 
     return {
-      paging: { ...params.paging, nextPage },
+      paging: { ...params.paging, nextAvailable: Boolean(paginationRes.next) },
       payload: res.data,
     };
   },
@@ -42,8 +54,6 @@ const updatePaging = createEvent<ListRequestParams['paging']>();
 const pagingReset = createEvent();
 const $paging = createStore<ListRequestParams['paging']>({
   page: 1,
-  limit: 10,
-  total: 100,
 })
   .on(pagingChanged, (_, paging) => paging)
   .on(updatePaging, (_, paging) => paging)

@@ -27,9 +27,7 @@ export type Car = {
 export type ListRequestParams = {
   paging: {
     page: number;
-    limit: number;
-    total: number;
-    nextPage?: number;
+    nextAvailable?: boolean;
   };
   searchFilter: string;
   fuelTypeFilter?: CarFuel | null;
