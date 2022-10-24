@@ -9,8 +9,8 @@
     "start": "yarn run ios && yarn run api",
     "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "fake": "node fakeAPI/index.js",
-    "api": "json-server --watch fakeAPI/data.json --port 3004"
+    "fake": "node fake.js",
+    "api": "json-server --watch data.json --port 3004"
   },
   "dependencies": {
     "@faker-js/faker": "^7.6.0",
