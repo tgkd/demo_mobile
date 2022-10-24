@@ -21,27 +21,28 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export function Routes() {
   return (
-    <Stack.Navigator initialRouteName="home">
-      <Stack.Screen name="home" component={HomeScreen} />
+    <Stack.Navigator
+      initialRouteName="home"
+      screenOptions={{
+        headerShadowVisible: false,
+        contentStyle: {
+          backgroundColor: '#fff',
+        },
+      }}>
       <Stack.Screen
-        options={{
-          presentation: 'modal',
-          contentStyle: {
-            backgroundColor: '#fff',
-          },
-        }}
+        name="home"
+        options={{ headerTitle: 'Cars', headerShadowVisible: false }}
+        component={HomeScreen}
+      />
+      <Stack.Screen
+        options={{ presentation: 'modal' }}
         name="details"
         component={DetailsScreen}
       />
       <Stack.Screen
         name="filters"
         component={FiltersScreen}
-        options={{
-          presentation: 'modal',
-          contentStyle: {
-            backgroundColor: '#fff',
-          },
-        }}
+        options={{ presentation: 'modal' }}
       />
     </Stack.Navigator>
   );

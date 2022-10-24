@@ -4,7 +4,11 @@ import React, { useCallback, useLayoutEffect } from 'react';
 import { Button, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AnimatedButton } from '../components/Button';
-import { fuelTypeChanged, $fuelTypeFilter, filtersReset } from '../store/list';
+import {
+  fuelTypeChanged,
+  $fuelTypeFilter,
+  filtersReset,
+} from '../store/filters';
 import { CarFuel } from '../types';
 
 const fuelTypesList: { label: string; value: CarFuel }[] = [

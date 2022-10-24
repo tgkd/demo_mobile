@@ -23,3 +23,14 @@ export type Car = {
   images: Media[];
   description: string;
 };
+
+export type ListRequestParams = {
+  paging: {
+    page: number;
+    limit: number;
+    total: number;
+    nextPage?: number;
+  };
+  searchFilter: string;
+  fuelTypeFilter?: CarFuel | null;
+};

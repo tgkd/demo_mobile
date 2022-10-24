@@ -1,36 +1,22 @@
 import { useNavigation } from '@react-navigation/native';
 import { useStore } from 'effector-react';
 import React, { useCallback, useEffect, useLayoutEffect } from 'react';
-import { Button, Keyboard, StyleSheet, TextInput, View } from 'react-native';
+import { Button, Keyboard, StyleSheet, View } from 'react-native';
 
 import { CarsList } from '../components/CarsList';
+import { SearchBar } from '../components/HeaderSearchBar';
 import { AppNav } from '../navigation';
 import {
-  $cars,
   $paging,
-  $searchFilter,
   pagingChanged,
-  searchChanged,
+  pagingReset,
   searchFx,
-} from '../store/list';
+} from '../store/filters';
 import { Car } from '../types';
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  input: {
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: '#ddd',
-    borderRadius: 8,
-  },
-});
 
 export function HomeScreen() {
   const navigation = useNavigation<AppNav>();
-  const data = useStore($cars);
   const paging = useStore($paging);
-  const search = useStore($searchFilter);
   const loading = useStore(searchFx.pending);
 
   useEffect(() => {
@@ -44,13 +30,7 @@ export function HomeScreen() {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: 'Cars',
-      statusBarHidden: false,
       headerRight: () => <Button onPress={showFiltersModal} title="Filters" />,
-      headerSearchBarOptions: {
-        inputType: 'text',
-        onChangeText: ({ nativeEvent: { text } }) => searchChanged(text),
-      },
     });
   }, [navigation, showFiltersModal]);
 
@@ -67,21 +47,26 @@ export function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <TextInput
-        underlineColorAndroid="transparent"
-        placeholder="Search"
-        onChangeText={searchChanged}
-        value={search}
-        style={styles.input}
-      />
+      <SearchBar />
       <CarsList
-        data={data}
         showLoader={loading}
         showPlaceholder={false}
         onSelect={onSelect}
         onEndReached={onEndReached}
-        searchText={search}
+        refreshing={loading}
+        onRefresh={pagingReset}
       />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  input: {
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: '#ddd',
+    borderRadius: 8,
+  },
+});

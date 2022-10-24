@@ -1,39 +1,26 @@
 import React from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
+import { useStore } from 'effector-react';
 
 import { Car } from '../types';
 import { CarListItem } from './CarListItem';
 import { ListPlaceholder } from './ListPlaceholder';
 import { LoadingView } from './LoadingView';
 import { NotFoundView } from './NotFoundView';
-
-const styles = StyleSheet.create({
-  container: {
-    paddingBottom: 48,
-  },
-  searchBarTip: {
-    alignSelf: 'center',
-    marginTop: 4,
-    marginBottom: 16,
-    color: '#ddd',
-  },
-  separator: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: '#ddd',
-  },
-});
+import { $cars } from '../store/list';
 
 interface Props {
-  searchText: string;
-  data: Array<Car>;
-  onSelect: (data: Car) => void;
-  onEndReached: () => void;
   showLoader: boolean;
   showPlaceholder: boolean;
+  refreshing: boolean;
+  onSelect: (data: Car) => void;
+  onEndReached: () => void;
+  onRefresh: () => void;
 }
 
 export const CarsList = (props: Props) => {
-  const { data, showLoader, showPlaceholder } = props;
+  const data = useStore($cars);
+  const { showLoader, showPlaceholder } = props;
 
   const renderSectionItem = ({ item }: { item: Car; index: number }) => (
     <CarListItem data={item} onPress={props.onSelect} />
@@ -50,7 +37,7 @@ export const CarsList = (props: Props) => {
 
   return (
     <FlatList
-      data={props.data}
+      data={data}
       renderItem={renderSectionItem}
       keyExtractor={item => `${item.id}_${item.model}`}
       contentContainerStyle={styles.container}
@@ -61,6 +48,18 @@ export const CarsList = (props: Props) => {
       maxToRenderPerBatch={20}
       ItemSeparatorComponent={() => <View style={styles.separator} />}
       contentInsetAdjustmentBehavior="automatic"
+      refreshing={false}
+      onRefresh={props.onRefresh}
     />
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    paddingBottom: 48,
+  },
+  separator: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: '#ddd',
+  },
+});
